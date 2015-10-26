@@ -1,0 +1,211 @@
+@using Webdiyer.WebControls.Mvc
+@model Maticsoft.Model.Shop.Agent.AgentInfo
+@{
+    Layout = "/Areas/MShop/Themes/M1/Views/Shared/_BaseLayout.cshtml";
+    ViewBag.Title = "体验店";
+}
+
+<div class="top">
+<a href="javascript:;" onclick="history.go(-1)"><span>&lt;返回</span></a>
+@Html.Partial("/Areas/MShop/Themes/M1/Views/Partial/_HeadRight.cshtml")
+</div>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=1.3"></script>
+@if (Model != null)
+{
+<article class="m-t-container">
+<section class="m-t-widget">
+<h3 class="title">@Model.Name</h3>
+<div class="m-t-address clearfix m-t-font">
+                <p id="item-add">地址：@Model.RegionFullName @Model.Address</p>
+                <p id="item-phone">电话：@Model.CellPhone</p>
+                <p id="item-intro">介绍：</p>
+				<div style="padding:0 0 0 3em;color: #767676;">@Html.Raw(@Model.Introduction)</div>
+</div>
+<div id="mapcontainer">
+</div>
+</section>
+</article>
+<script type="text/javascript">
+    var map = new BMap.Map("mapcontainer");
+    map.centerAndZoom("@Model.RegionFullName", 13);
+    map.enableScrollWheelZoom();    //启用滚轮放大缩小，默认禁用
+    map.enableContinuousZoom();    //启用地图惯性拖拽，默认禁用
+
+    map.addControl(new BMap.NavigationControl());  //添加默认缩放平移控件
+    map.addControl(new BMap.OverviewMapControl()); //添加默认缩略地图控件
+    map.addControl(new BMap.OverviewMapControl({ isOpen: true, anchor: BMAP_ANCHOR_BOTTOM_RIGHT }));   //右下角，打开
+
+    var localSearch = new BMap.LocalSearch(map);
+    localSearch.enableAutoViewport(); //允许自动调节窗体大小
+    $(function() {
+	var browser_width = $(document.body).width(); 
+    $("#mapcontainer").css("width",browser_width-14); 
+    map.clearOverlays();//清空原来的标注
+    var keyword = "@Model.RegionFullName"+"@Model.Address";
+    localSearch.setSearchCompleteCallback(function (searchResult) {
+        var poi = searchResult.getPoi(0);
+        //document.getElementById("result_").value = poi.point.lng + "," + poi.point.lat;
+        map.centerAndZoom(poi.point, 15);
+        var marker = new BMap.Marker(new BMap.Point(poi.point.lng, poi.point.lat));  // 创建标注，为要查询的地方对应的经纬度
+        map.addOverlay(marker);
+        var content = "@Model.RegionFullName"+"@Model.Address" + "<br/><br/>经度：" + poi.point.lng + "<br/>纬度：" + poi.point.lat;
+        var infoWindow = new BMap.InfoWindow("<p style='font-size:14px;'>" + content + "</p>");
+        marker.addEventListener("click", function () { this.openInfoWindow(infoWindow); });
+        // marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+    });
+    localSearch.search(keyword);
+
+	$(window).resize(function() { 
+	var browser_width = $(document.body).width(); 
+    $("#mapcontainer").css("width",browser_width-14); 
+}); 
+})
+</script>
+}
+//up script is cshtml
+
+//show in browser;
+<!DOCTYPE html>
+<html>
+<head>
+    
+     
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>惠聚家具商城</title>
+    <meta name="keywords" content="惠聚,网上商城，家具商城，经销商，O2O">
+    <meta name="description" content="家具商城">
+
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">-->
+	<meta name="viewport" content="width=device-width,user-scalable=yes, initial-scale=1, minimum-scale=1, maximum-scale=5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <script src="/Scripts/jquery-1.8.3.min.js" ></script> 
+    <script src="/Scripts/jquery/maticsoft.jquery.min.js" type="text/javascript"  ></script> 
+    <link href="/Scripts/msgbox/css/msgbox.css" rel="stylesheet"  />
+    <script src="/Scripts/msgbox/js/msgbox.js"  type="text/javascript" ></script>
+    <script type="text/javascript" language="javascript">        var $Maticsoft = { BasePath: '/MShop/', CurrentArea: 'MShop' } </script>
+      
+    <link href="/Areas/MShop/Themes/M1/Content/Css/style.css" rel="stylesheet" type="text/css" /> 
+    <link href="/Areas/MShop/Themes/M1/Content/Css/styleHuiju.css" rel="stylesheet" type="text/css" /> 
+    <script src="/Areas/MShop/Themes/M1/Content/scripts/imgtouch.js"> </script>
+    
+    
+
+</head>
+<body id="body" class="seach_bg">
+    
+
+<div class="top">
+<a href="javascript:;" onclick="history.go(-1)"><span>&lt;返回</span></a>
+<div class="header-btn fr">
+
+  <a href="/MShop/p/c" style="margin:8px 2px 8px 0">
+         <img width="30" height="30" src="/Areas/MShop/Themes/M1/Content/images/sort.png"/> 
+    </a> 
+    <a href="/MShop/u" style="margin:8px 8px 8px 0">
+        <img width="30" height="30" src="/Areas/MShop/Themes/M1/Content/images/avatar.png"/>
+    </a>
+    <a href="/MShop/sc/ci" style="margin:8px 8px 8px 0">
+        <img width="30" height="30" src="/Areas/MShop/Themes/M1/Content/images/cart.png" /> 
+    </a>
+    <a href="/MShop/agent" style="margin:8px 2px 8px 0">
+        <img width="30" height="30" src="/Areas/MShop/Themes/M1/Content/images/agent.png"/>
+    </a> 
+    <a href="/MShop/" style="margin:8px 8px 8px 0">
+         <img width="32" height="32" src="/Areas/MShop/Themes/M1/Content/images/home.png" /> 
+    </a> 
+</div>
+
+</div>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=1.3"></script>
+<article class="m-t-container">
+<section class="m-t-widget">
+<h3 class="title">惠聚怡家湖南衡阳市衡东体验店</h3>
+<div class="m-t-address clearfix m-t-font">
+                <p id="item-add">地址：湖南省衡阳市衡东县 湖南省衡阳市衡东县晓霞路双虎家私名品</p>
+                <p id="item-phone">电话：1538606758</p>
+                <p id="item-intro">介绍：</p>
+				<div style="padding:0 0 0 3em;color: #767676;"></div>
+</div>
+<div id="mapcontainer">
+</div>
+</section>
+</article>
+<script type="text/javascript">
+    var map = new BMap.Map("mapcontainer");
+    map.centerAndZoom("湖南省衡阳市衡东县", 13);
+    map.enableScrollWheelZoom();    //启用滚轮放大缩小，默认禁用
+    map.enableContinuousZoom();    //启用地图惯性拖拽，默认禁用
+
+    map.addControl(new BMap.NavigationControl());  //添加默认缩放平移控件
+    map.addControl(new BMap.OverviewMapControl()); //添加默认缩略地图控件
+    map.addControl(new BMap.OverviewMapControl({ isOpen: true, anchor: BMAP_ANCHOR_BOTTOM_RIGHT }));   //右下角，打开
+
+    var localSearch = new BMap.LocalSearch(map);
+    localSearch.enableAutoViewport(); //允许自动调节窗体大小
+    $(function() {
+	var browser_width = $(document.body).width(); 
+    $("#mapcontainer").css("width",browser_width-14); 
+    map.clearOverlays();//清空原来的标注
+    var keyword = "湖南省衡阳市衡东县"+"湖南省衡阳市衡东县晓霞路双虎家私名品";
+    localSearch.setSearchCompleteCallback(function (searchResult) {
+        var poi = searchResult.getPoi(0);
+        //document.getElementById("result_").value = poi.point.lng + "," + poi.point.lat;
+        map.centerAndZoom(poi.point, 15);
+        var marker = new BMap.Marker(new BMap.Point(poi.point.lng, poi.point.lat));  // 创建标注，为要查询的地方对应的经纬度
+        map.addOverlay(marker);
+        var content = "湖南省衡阳市衡东县"+"湖南省衡阳市衡东县晓霞路双虎家私名品" + "<br/><br/>经度：" + poi.point.lng + "<br/>纬度：" + poi.point.lat;
+        var infoWindow = new BMap.InfoWindow("<p style='font-size:14px;'>" + content + "</p>");
+        marker.addEventListener("click", function () { this.openInfoWindow(infoWindow); });
+        // marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+    });
+    localSearch.search(keyword);
+
+	$(window).resize(function() { 
+	var browser_width = $(document.body).width(); 
+    $("#mapcontainer").css("width",browser_width-14); 
+}); 
+})
+</script>
+
+<div style="clear: both;height:0;overflow:hidden;">
+
+
+</div>
+
+
+    
+    
+
+    <script type="text/javascript">
+        if (window.navigator.userAgent.indexOf('Maticsoft_Shop_APP') == -1) {  
+            //非手机访问
+            $('.footer,.top').show();
+        }
+        $(function () {
+            $("input").focus(function () {
+                $('footer').hide();
+            });
+            $("input").click(function () {
+                $('footer').hide();
+            });
+            $("input").blur(function () {
+                $('footer').show()
+                //$('footer').delay(3000).show();
+            });
+
+            $("textarea").click(function () {
+                $('footer').hide();
+            });
+            $("textarea").focus(function () {
+                $('footer').hide();
+            });
+            $("textarea").blur(function () {
+                $('footer').delay(800).show();
+            });
+        })
+    </script>
+</body>
+</html>
